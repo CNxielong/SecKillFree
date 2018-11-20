@@ -14,6 +14,7 @@ public class SuccessKilled {
 
     private long userPhone;
 
+    // 1:成功, 0:秒杀结束, -1:重复秒杀, -2:系统异常, -3:数据篡改
     private short state;
 
     private Date createTime;
@@ -57,6 +58,7 @@ public class SuccessKilled {
         this.userPhone = userPhone;
     }
 
+    // 1:成功, 0:秒杀结束, -1:重复秒杀, -2:系统异常, -3:数据篡改
     public short getState() {
         return state;
     }

@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * @Description: ${SeckillDaoTest测试类Junit4}
+ * @Description: org.seckill.dao.SeckillDao 测试类Junit4
  * @Auther: X-Dragon
  * @Date: 2018/11/18 16:42
  * 配置spring和junit整合,junit启动时加载springIOC容器
