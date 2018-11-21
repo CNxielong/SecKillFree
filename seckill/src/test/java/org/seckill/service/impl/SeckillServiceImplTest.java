@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 //告诉junitSpring的配置文件
 @ContextConfiguration({"classpath:spring/spring-dao.xml","classpath:spring/spring-service.xml"})
-//@ContextConfiguration({"classpath:spring/*"})
+//@ContextConfiguration({"classpath:spring/*"}) // 也行
 public class SeckillServiceImplTest {
 
     //Logger日志
@@ -30,7 +30,7 @@ public class SeckillServiceImplTest {
 
     @Autowired
     private SeckillService seckillService;
-//    private SeckillServiceImpl seckillService;
+//    private SeckillServiceImpl seckillService; //会报错
 
     @Test
     public void getSeckillList() {

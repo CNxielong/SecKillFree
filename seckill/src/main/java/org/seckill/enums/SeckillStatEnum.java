@@ -11,7 +11,8 @@ public enum SeckillStatEnum {
     END(0,"秒杀结束"),
     REPEAT_KILL(-1,"重复秒杀"),
     INSERT_ERROR(-2,"系统异常"),
-    DATA_REWRITE(-3,"数据篡改");
+    DATA_REWRITE(-3,"数据篡改"),
+    TIME_ERROR(-4,"错过秒杀时间");
 
     //状态值
     private  int state;

@@ -14,6 +14,7 @@ import org.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -28,6 +29,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Service
+// @Component // 也行
 public class SeckillServiceImpl implements SeckillService {
 
     //Logger日志
