@@ -103,11 +103,12 @@ public class SeckillServiceImpl implements SeckillService {
      * 2.保证事务方法的执行时间尽可能短,不要穿插其他网络操作RPC/HTTP请求或者剥离到事务方法外部.
      * 3.不是所有的方法都需要事务.如一些查询的service.只有一条修改操作的service.
      */
-    public SeckillExecution excuteSeckill(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillException, SeckillCloseException {
+    public SeckillExecution excuteSeckill(long seckillId, long userPhone, String md5)
+            throws SeckillException, RepeatKillException, SeckillCloseException {
 
         // 判断MD5是否为空
         if (null == md5 || !md5.equals(getMD5(seckillId))) {
-            throw new SeckillException(SeckillStatEnum.INSERT_ERROR.getStateInfo());
+            throw new SeckillException(SeckillStatEnum.INNER_ERROR.getStateInfo());
         }
         Date now = new Date();
 
@@ -117,7 +118,7 @@ public class SeckillServiceImpl implements SeckillService {
             // 减库存 失败
             if(updateCount<=0){
                 // 没有更新到记录，秒杀结束
-                throw new SeckillCloseException(SeckillStatEnum.INSERT_ERROR.getStateInfo());
+                throw new SeckillCloseException(SeckillStatEnum.INNER_ERROR.getStateInfo());
             }else{ // 成功
                 // 记录秒杀行为 插入
                 int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
