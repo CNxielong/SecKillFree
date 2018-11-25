@@ -13,7 +13,7 @@ public interface SuccessKilledDao {
 
     /*
      * @description: TODO 插入购买明细
-     * @date 2018/11/17 22:17
+     * @date 2018/11/12 22:17
      * @param [seckillId, userPhone]
      * @return int 插入行数
      */

@@ -17,7 +17,7 @@ public interface SeckillDao {
     /*
      * @author X-Dragon
      * @description: 减库存
-     * @date 2018/11/17 22:05
+     * @date 2018/11/12 22:05
      * @param [seckillId, killTime]
      * @return int 如果行数>1,表示更新的记录行数
      */

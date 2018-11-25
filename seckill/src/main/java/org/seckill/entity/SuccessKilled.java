@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @Description: 秒杀成功明细表
  * @Auther: X-Dragon
- * @Date: 2018/11/17 19:32
+ * @Date: 2018/11/11 19:32
  * @Version: 1.0
  */
 public class SuccessKilled {
