@@ -2,6 +2,7 @@ package org.seckill.service.impl;
 
 import org.seckill.dao.SeckillDao;
 import org.seckill.dao.SuccessKilledDao;
+import org.seckill.dao.cache.RedisDao;
 import org.seckill.dto.Exposer;
 import org.seckill.dto.SeckillExecution;
 import org.seckill.entity.Seckill;
@@ -32,16 +33,19 @@ import java.util.List;
 // @Component // 也行
 public class SeckillServiceImpl implements SeckillService {
 
-    //Logger日志
+    // Logger日志
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    //两个dao
+    // 两个dao
     @Autowired
     private SeckillDao seckillDao;
     @Autowired
     private SuccessKilledDao successKilledDao;
 
-    //md5盐值字符串，用于混淆MD5
+    @Autowired
+    private RedisDao redisDao;
+
+    // md5盐值字符串，用于混淆MD5
     private static final String salt = "xielong";
 
     @Override
@@ -62,13 +66,21 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
-        // 获取秒杀实体
-        Seckill seckill = seckillDao.queryById(seckillId);
-        // 判断秒杀是否为空 为空返回Exposer
-        if (null == seckill) {
-//            throw new SeckillException("");
-            return new Exposer(false, seckillId);
+        // 优化点：缓存优化
+
+        // 1 从Redis 获取秒杀实体
+        Seckill seckill = redisDao.getSeckill(seckillId);
+        if (null == seckill) { // 如果Redis中没有缓存
+            // 2 取数据库查询秒杀实体
+            seckill = seckillDao.queryById(seckillId);
+            if (null == seckill) { // 如果数据库中也不存在
+                return new Exposer(false, seckillId);
+            }else {
+                // 3 放入Redis
+                redisDao.setSeckill(seckill);
+            }
         }
+
         // 当前系统时间、开始时间、结束时间
         Long now = new Date().getTime();//getTime()
         Long start = seckill.getStartTime().getTime();
@@ -77,9 +89,10 @@ public class SeckillServiceImpl implements SeckillService {
         if (now < start || now > end) {
             return new Exposer(false, seckillId, now, start, end);
         }
-        //获得MD5
+
+        // 获得MD5
         String md5 = getMD5(seckillId);
-        //执行秒杀
+        // 执行秒杀
         return new Exposer(true, md5, seckillId);
     }
 
@@ -116,31 +129,29 @@ public class SeckillServiceImpl implements SeckillService {
             // 执行秒杀过程 1、减库存 2、记录购买行为
             int updateCount = seckillDao.reduceNumber(seckillId, now);
             // 减库存 失败
-            if(updateCount<=0){
+            if (updateCount <= 0) {
                 // 没有更新到记录，秒杀结束
                 throw new SeckillCloseException(SeckillStatEnum.INNER_ERROR.getStateInfo());
-            }else{ // 成功
+            } else { // 成功
                 // 记录秒杀行为 插入
                 int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
                 // 唯一：seckillId,userPhone
-                if (insertCount<=0){// 插入失败
+                if (insertCount <= 0) {// 插入失败
                     // 重复秒杀
                     throw new RepeatKillException(SeckillStatEnum.REPEAT_KILL.getStateInfo());
-                }else{// 秒杀成功
+                } else {// 秒杀成功
                     SuccessKilled successKilled = successKilledDao.queryByIdSeckill(seckillId, userPhone);
-                    return  new SeckillExecution(seckillId, 1, SeckillStatEnum.SUCCESS.getStateInfo(), successKilled);
+                    return new SeckillExecution(seckillId, 1, SeckillStatEnum.SUCCESS.getStateInfo(), successKilled);
                 }
             }
-        }catch (SeckillCloseException e1) {
+        } catch (SeckillCloseException e1) {
             throw e1;
-        }
-        catch (RepeatKillException e2) {
+        } catch (RepeatKillException e2) {
             throw e2;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             // 所有的编译期异常转化为运行期异常,spring的声明式事务做rollback
-            throw  new SeckillException("seckill inner error: " + e.getMessage());
+            throw new SeckillException("seckill inner error: " + e.getMessage());
         }
 
     }
