@@ -17,7 +17,8 @@ import redis.clients.jedis.JedisPool;
  * @Version: 1.0
  */
 
-public class RedisDao {
+
+public class RedisDao { // 别人的代码没问题
 
     private static final Logger LOG = LoggerFactory.getLogger(RedisDao.class);
 
@@ -128,7 +129,7 @@ public class RedisDao {
 //
 //        return null;
 //    }
-
+//
 //    public String setSeckill(Seckill seckill) {
 //        //set:Object(Seckill)->序列化->byte[] ->发送给redis
 //        try {
