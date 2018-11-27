@@ -34,10 +34,11 @@
     <!--mybatis调用存储过程-->
     <select id="killByProcedure" statementType="CALLABLE">
         call execute_seckill(
-          #{seckillId,jdbcType=BIGINT,mode=IN},
+          #{seckillId,jdbcType=BIGINT,mode=IN}, <!-- mode=in 入参 mode=out 出参 -->
           #{phone,jdbcType=BIGINT,mode=IN},
           #{killTime,jdbcType=TIMESTAMP,mode=IN},
           #{result,jdbcType=INTEGER,mode=OUT}
         )
     </select>
+
 </mapper>

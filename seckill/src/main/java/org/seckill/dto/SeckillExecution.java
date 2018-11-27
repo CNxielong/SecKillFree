@@ -47,6 +47,12 @@ public class SeckillExecution {
         this.successKilled = successKilled;
     }
 
+    public SeckillExecution(long seckillId, int state, SuccessKilled successKilled) {
+        this.seckillId = seckillId;
+        this.state = state;
+        this.successKilled = successKilled;
+    }
+
     //失败状态
     public SeckillExecution(long seckillId, int state, String stateInfo) {
         this.seckillId = seckillId;

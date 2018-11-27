@@ -66,7 +66,7 @@ public class SeckillServiceImplTest {
 
     @Test
     public void testSeckillLogic(){
-        long seckillId = 1001L;
+        long seckillId = 1000L;
         Exposer exposer = seckillService.exportSeckillUrl(seckillId);
         logger.info("暴露的秒杀信息#{}", exposer);
         if (null != exposer){// 暴露了秒杀地址
@@ -85,4 +85,19 @@ public class SeckillServiceImplTest {
 
         }
     }
+
+    @Test
+    public void testExecuteSeckillProcedure(){
+        long seckillId = 1001L;
+        long phone = 17744494563L;
+        Exposer exposer = seckillService.exportSeckillUrl(seckillId);
+        if(exposer.isExposed()){
+            String md5 =  exposer.getMd5();
+            SeckillExecution execution = seckillService.executeSeckillProcedure(seckillId, phone, md5);
+            logger.info(execution.getStateInfo());
+        }
+
+    }
+
+
 }
